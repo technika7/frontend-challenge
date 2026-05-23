@@ -133,4 +133,51 @@ describe("MRF Generator Strategy Pattern", () => {
     expect(fileKeys).toContain("G1/2024-11");
     expect(fileKeys).toContain("G2/2024-10");
   });
+
+  it("should infer HCPCS and OTHER billing code types", () => {
+    const context = new MrfGeneratorContext();
+    
+    const claims = [
+      { ...mockClaim, claimId: "C1", procedureCode: "J3490" }, // HCPCS
+      { ...mockClaim, claimId: "C2", procedureCode: "XYZ12" }  // OTHER
+    ];
+
+    const resultsMap = context.generate(claims);
+    const results = Array.from(resultsMap.values());
+    
+    const items = results[0].in_network;
+    expect(items).toHaveLength(2);
+    
+    const hcpcsItem = items.find(i => i.billing_code === "J3490");
+    const otherItem = items.find(i => i.billing_code === "XYZ12");
+    
+    expect(hcpcsItem?.billing_code_type).toBe("HCPCS");
+    expect(otherItem?.billing_code_type).toBe("OTHER");
+  });
+
+  it("should map place of service strings to CMS codes correctly", () => {
+    const context = new MrfGeneratorContext();
+    
+    const claims = [
+      { ...mockClaim, claimId: "C1", placeOfService: "Inpatient Hospital" },
+      { ...mockClaim, claimId: "C2", placeOfService: "Telehealth" },
+      { ...mockClaim, claimId: "C3", placeOfService: "UnknownPlace" }
+    ];
+
+    const resultsMap = context.generate(claims);
+    const results = Array.from(resultsMap.values());
+    const items = results[0].in_network;
+    
+    // They share the same procedure code, so they are grouped in the same InNetworkItem
+    // but their negotiated rates are separated by the composite key!
+    expect(items).toHaveLength(1);
+    const rates = items[0].negotiated_rates;
+    expect(rates).toHaveLength(3);
+    
+    const serviceCodes = rates.map(r => r.negotiated_prices[0].service_code[0]);
+    expect(serviceCodes).toContain("21"); // Inpatient Hospital
+    expect(serviceCodes).toContain("02"); // Telehealth
+    expect(serviceCodes).toContain("99"); // UnknownPlace -> Other
+  });
 });
+
