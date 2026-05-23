@@ -49,13 +49,7 @@ const CustomerMrfPage = observer(() => {
   }
 
   return (
-    <div
-      className="min-h-screen"
-      style={{
-        background:
-          "linear-gradient(160deg, #050d05 0%, #0a1a0a 50%, #050d05 100%)",
-      }}
-    >
+    <div className="flex flex-col flex-1">
       <Container size="xl" py={48}>
         <Stack gap={36}>
           {/* ── Breadcrumb ────────────────────────────────────────────── */}
@@ -64,14 +58,14 @@ const CustomerMrfPage = observer(() => {
               component="button"
               onClick={() => navigate("/mrf")}
               size="sm"
-              c="green.5"
+              c="green.8"
             >
               ← MRF Index
             </Anchor>
             <Text c="dimmed" size="sm">
               /
             </Text>
-            <Text size="sm" c="white" fw={600}>
+            <Text size="sm" fw={600}>
               {customer}
             </Text>
           </Group>
@@ -79,13 +73,13 @@ const CustomerMrfPage = observer(() => {
           {/* ── Page Header ───────────────────────────────────────────── */}
           <div>
             <Group gap={10} mb={8}>
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-700/40 to-green-900/40 border border-green-700/30 flex items-center justify-center">
-                <span className="text-green-400 font-bold text-sm">
+              <div className="w-10 h-10 rounded-lg bg-green-100 border border-green-300 flex items-center justify-center">
+                <span className="text-green-700 font-bold text-sm">
                   {customer.slice(0, 2)}
                 </span>
               </div>
               <div>
-                <Title order={1} c="white" fw={700}>
+                <Title order={1} fw={700}>
                   {customer}
                 </Title>
                 <Text c="dimmed" size="sm">
@@ -94,7 +88,7 @@ const CustomerMrfPage = observer(() => {
               </div>
             </Group>
 
-            <Divider mt={20} color="rgba(255,255,255,0.08)" />
+            <Divider mt={20} color="#e2e8f0" />
           </div>
 
           {/* ── Loading State ─────────────────────────────────────────── */}
@@ -111,12 +105,12 @@ const CustomerMrfPage = observer(() => {
 
           {/* ── Fetch Error ───────────────────────────────────────────── */}
           {mrfStore.fetchError && (
-            <Alert color="orange" title="Error Loading Files">
+            <Alert color="amber" title="Error Loading Files" radius="md">
               <Text size="sm">{mrfStore.fetchError}</Text>
               <Button
                 size="xs"
                 variant="outline"
-                color="orange"
+                color="amber"
                 mt={8}
                 onClick={() => mrfStore.fetchCustomerFiles(customer)}
               >
@@ -132,7 +126,7 @@ const CustomerMrfPage = observer(() => {
               <Center py={60}>
                 <Stack align="center" gap={12} ta="center">
                   <div className="text-4xl">📭</div>
-                  <Text size="lg" fw={500} c="white">
+                  <Text size="lg" fw={500}>
                     No files for {customer}
                   </Text>
                   <Text size="sm" c="dimmed">
@@ -154,10 +148,10 @@ const CustomerMrfPage = observer(() => {
             <Stack gap={16}>
               <Group justify="space-between" align="center">
                 <Group gap={8}>
-                  <Text size="sm" fw={600} c="white">
+                  <Text size="sm" fw={600}>
                     Published Files
                   </Text>
-                  <Badge color="green" variant="light" size="sm">
+                  <Badge color="green" variant="light" size="sm" radius="sm">
                     {mrfStore.customerFiles.length} file
                     {mrfStore.customerFiles.length !== 1 ? "s" : ""}
                   </Badge>
@@ -179,7 +173,7 @@ const CustomerMrfPage = observer(() => {
           )}
 
           {/* ── Regulatory Note ───────────────────────────────────────── */}
-          <Divider color="rgba(255,255,255,0.06)" />
+          <Divider color="#e2e8f0" />
           <Text size="xs" c="dimmed">
             These files are published in compliance with 45 CFR §147.210. For
             questions, contact your plan administrator.{" "}
@@ -187,7 +181,7 @@ const CustomerMrfPage = observer(() => {
               href="https://github.com/CMSgov/price-transparency-guide/tree/master/schemas/allowed-amounts"
               target="_blank"
               size="xs"
-              c="green.6"
+              c="green.8"
             >
               Schema reference →
             </Anchor>

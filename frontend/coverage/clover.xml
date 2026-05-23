@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1779512298007" clover="3.2.0">
+  <project timestamp="1779512298007" name="All files">
+    <metrics statements="22" coveredstatements="22" conditionals="9" coveredconditionals="7" methods="3" coveredmethods="3" elements="34" coveredelements="32" complexity="0" loc="22" ncloc="22" packages="1" files="2" classes="2"/>
+    <file name="csvValidator.ts" path="D:\Current\frontend-challenge\frontend\src\utils\csvValidator.ts">
+      <metrics statements="20" coveredstatements="20" conditionals="5" coveredconditionals="5" methods="1" coveredmethods="1"/>
+      <line num="20" count="1" type="stmt"/>
+      <line num="30" count="1" type="stmt"/>
+      <line num="32" count="1" type="stmt"/>
+      <line num="38" count="1" type="stmt"/>
+      <line num="39" count="1" type="stmt"/>
+      <line num="40" count="1" type="stmt"/>
+      <line num="46" count="1" type="stmt"/>
+      <line num="147" count="1" type="stmt"/>
+      <line num="207" count="4" type="stmt"/>
+      <line num="208" count="4" type="stmt"/>
+      <line num="210" count="4" type="stmt"/>
+      <line num="211" count="4" type="stmt"/>
+      <line num="214" count="4" type="stmt"/>
+      <line num="215" count="4" type="stmt"/>
+      <line num="216" count="104" type="cond" truecount="3" falsecount="0"/>
+      <line num="219" count="4" type="stmt"/>
+      <line num="221" count="4" type="cond" truecount="2" falsecount="0"/>
+      <line num="222" count="1" type="stmt"/>
+      <line num="224" count="3" type="stmt"/>
+      <line num="235" count="4" type="stmt"/>
+    </file>
+    <file name="mrfMapper.ts" path="D:\Current\frontend-challenge\frontend\src\utils\mrfMapper.ts">
+      <metrics statements="2" coveredstatements="2" conditionals="4" coveredconditionals="2" methods="2" coveredmethods="2"/>
+      <line num="98" count="4" type="stmt"/>
+      <line num="137" count="1" type="stmt"/>
+    </file>
+  </project>
+</coverage>

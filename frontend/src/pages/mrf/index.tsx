@@ -31,7 +31,7 @@ import {
   SimpleGrid,
   Anchor,
 } from "@mantine/core";
-import { mrfStore } from "../../stores/appStore";
+import { mrfStore, authStore } from "../../stores/appStore";
 import MrfFileCard from "../../components/MrfFileCard";
 
 const MrfPublicPage = observer(() => {
@@ -48,13 +48,7 @@ const MrfPublicPage = observer(() => {
   }));
 
   return (
-    <div
-      className="min-h-screen"
-      style={{
-        background:
-          "linear-gradient(160deg, #050d05 0%, #0a1a0a 50%, #050d05 100%)",
-      }}
-    >
+    <div className="flex flex-col flex-1">
       <Container size="xl" py={48}>
         <Stack gap={40}>
           {/* ── Page Header ───────────────────────────────────────────── */}
@@ -68,7 +62,7 @@ const MrfPublicPage = observer(() => {
               </Badge>
             </Group>
 
-            <Title order={1} c="white" fw={700} mb={8}>
+            <Title order={1} fw={700} mb={8}>
               Machine-Readable Files
             </Title>
             <Text c="dimmed" maw={640} size="md">
@@ -77,7 +71,7 @@ const MrfPublicPage = observer(() => {
               in machine-readable JSON format.
             </Text>
 
-            <Divider mt={24} color="rgba(255,255,255,0.08)" />
+            <Divider mt={24} color="#e2e8f0" />
           </div>
 
           {/* ── Loading State ─────────────────────────────────────────── */}
@@ -94,7 +88,7 @@ const MrfPublicPage = observer(() => {
 
           {/* ── Fetch Error ───────────────────────────────────────────── */}
           {mrfStore.fetchError && (
-            <Alert color="orange" title="Unable to Load Files" radius="lg">
+            <Alert color="amber" title="Unable to Load Files" radius="md">
               <Stack gap={8}>
                 <Text size="sm">{mrfStore.fetchError}</Text>
                 <Text size="sm" c="dimmed">
@@ -106,7 +100,7 @@ const MrfPublicPage = observer(() => {
                 <Button
                   size="xs"
                   variant="outline"
-                  color="orange"
+                  color="amber"
                   onClick={() => mrfStore.fetchAllFiles()}
                 >
                   Retry
@@ -122,7 +116,7 @@ const MrfPublicPage = observer(() => {
               <Center py={80}>
                 <Stack align="center" gap={16} maw={440} ta="center">
                   <div className="text-5xl">📂</div>
-                  <Title order={3} c="white">
+                  <Title order={3}>
                     No MRF Files Yet
                   </Title>
                   <Text c="dimmed" size="sm">
@@ -132,9 +126,9 @@ const MrfPublicPage = observer(() => {
                   <Button
                     variant="light"
                     color="green"
-                    onClick={() => navigate("/login")}
+                    onClick={() => navigate(authStore.isAuthenticated ? "/upload" : "/login")}
                   >
-                    Sign in to Generate Files
+                    {authStore.isAuthenticated ? "Upload Claims to Generate" : "Sign in to Generate Files"}
                   </Button>
                 </Stack>
               </Center>
@@ -151,10 +145,10 @@ const MrfPublicPage = observer(() => {
                       <div className="w-2 h-8 rounded-full bg-gradient-to-b from-green-500 to-green-800" />
                       <div>
                         <Group gap={8}>
-                          <Text fw={700} c="white" size="lg">
+                          <Text fw={700} size="lg">
                             {customer}
                           </Text>
-                          <Badge variant="light" color="green" size="sm">
+                          <Badge variant="light" color="green" size="sm" radius="sm">
                             {files.length} file{files.length !== 1 ? "s" : ""}
                           </Badge>
                         </Group>
@@ -168,7 +162,7 @@ const MrfPublicPage = observer(() => {
                       component="button"
                       onClick={() => navigate(`/mrf/${customer}`)}
                       size="sm"
-                      c="green.4"
+                c="green.8"
                     >
                       View all →
                     </Anchor>
@@ -189,7 +183,7 @@ const MrfPublicPage = observer(() => {
           )}
 
           {/* ── Regulatory Footer ─────────────────────────────────────── */}
-          <Divider color="rgba(255,255,255,0.06)" mt={20} />
+          <Divider color="#e2e8f0" mt={20} />
           <Stack gap={4}>
             <Text size="xs" c="dimmed">
               Published pursuant to 45 CFR §147.210 — Transparency in Coverage
@@ -202,7 +196,7 @@ const MrfPublicPage = observer(() => {
                 target="_blank"
                 rel="noopener noreferrer"
                 size="xs"
-                c="green.6"
+                c="green.8"
               >
                 CMS Price Transparency Guide — Allowed Amounts Schema
               </Anchor>

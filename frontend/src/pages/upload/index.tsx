@@ -25,6 +25,7 @@ import {
 } from "@mantine/core";
 import { authStore, uploadStore, claimsStore } from "../../stores/appStore";
 import FileUpload from "../../components/FileUpload";
+import { CSV_HEADER_MAP } from "../../utils/csvValidator";
 
 const UploadPage = observer(() => {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ const UploadPage = observer(() => {
   const hasValidClaims = claimsStore.totalCount > 0;
 
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(160deg, #050d05 0%, #0a1a0a 100%)" }}>
+    <div className="flex flex-col flex-1">
       <Container size="lg" py={40}>
         <Stack gap={32}>
           {/* ── Page Header ───────────────────────────────────────────── */}
@@ -52,7 +53,7 @@ const UploadPage = observer(() => {
                 size="sm"
                 variant="filled"
                 color="green"
-                style={{ borderRadius: 6 }}
+                radius="sm"
               >
                 Step 1
               </Badge>
@@ -64,8 +65,8 @@ const UploadPage = observer(() => {
               </Badge>
             </Group>
 
-            <Title order={1} c="white" fw={700}>
-              Upload Claims CSV
+            <Title order={1} fw={700}>
+              Upload Claims Data
             </Title>
             <Text c="dimmed" mt={8} maw={600}>
               Upload your monthly claims export. We'll parse, validate, and
@@ -74,86 +75,56 @@ const UploadPage = observer(() => {
             </Text>
           </div>
 
-          <Divider color="rgba(255,255,255,0.08)" />
+          <Divider color="#e2e8f0" />
 
-          {/* ── Upload Widget ─────────────────────────────────────────── */}
-          <div
-            className="rounded-2xl border border-white/10 p-6 md:p-8"
-            style={{ background: "rgba(255,255,255,0.03)" }}
-          >
-            <Text size="sm" fw={600} c="white" mb={16}>
-              📂 Select CSV File
+          {/* ── Upload Widget ────────────────────────────────────────────────────────── */}
+          <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-6 md:p-8">
+            <Text size="sm" fw={600} c="slate" mb={16}>
+              Select or drag your CSV file
             </Text>
             <FileUpload />
           </div>
 
-          {/* ── CSV Format Reference ───────────────────────────────────── */}
-          <div
-            className="rounded-2xl border border-white/5 p-5"
-            style={{ background: "rgba(255,255,255,0.02)" }}
-          >
-            <Text size="sm" fw={600} c="dimmed" mb={10}>
+          {/* ── CSV Format Reference ───────────────────────────────────────────────────── */}
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-5">
+            <Text size="sm" fw={600} c="slate.4" mb={10}>
               Expected CSV Columns
             </Text>
             <div className="flex flex-wrap gap-2">
-              {[
-                "Claim ID",
-                "Subscriber ID",
-                "Member Sequence",
-                "Claim Status",
-                "Billed",
-                "Allowed",
-                "Paid",
-                "Service Date",
-                "Place of Service",
-                "Claim Type",
-                "Procedure Code",
-                "Provider ID",
-                "Provider Name",
-                "Group Name",
-                "Group ID",
-                "Plan",
-                "Plan ID",
-              ].map((col) => (
-                <Badge
-                  key={col}
-                  variant="outline"
-                  color="gray"
-                  size="xs"
-                  ff="monospace"
-                >
-                  {col}
-                </Badge>
-              ))}
+              {Object.keys(CSV_HEADER_MAP).map((col) => {
+                // Ignore case and trim when matching found headers, just to be robust
+                const isFound = uploadStore.foundHeaders.some(
+                  (h) => h.trim().toLowerCase() === col.trim().toLowerCase()
+                );
+                return (
+                  <Badge
+                    key={col}
+                    variant={isFound ? "light" : "outline"}
+                    color={isFound ? "green" : "gray"}
+                    size="xs"
+                    ff="monospace"
+                  >
+                    {col} {isFound && "✓"}
+                  </Badge>
+                );
+              })}
             </div>
           </div>
 
           {/* ── Proceed to Review ──────────────────────────────────────── */}
           {hasValidClaims && (
-            <div
-              className="rounded-2xl border border-green-800/30 p-5 bg-green-950/20"
-            >
-              <Group justify="space-between" align="center">
-                <div>
-                  <Text size="sm" fw={600} c="green.3">
-                    ✅ {claimsStore.totalCount} claims ready for review
-                  </Text>
-                  <Text size="xs" c="dimmed" mt={2}>
-                    {uploadStore.validationErrors.length > 0
-                      ? `${uploadStore.errorRowCount} rows excluded due to validation errors`
-                      : "All rows passed validation"}
-                  </Text>
-                </div>
-                <Button
-                  id="proceed-to-review"
-                  size="md"
-                  color="green"
-                  onClick={() => navigate("/review")}
-                  rightSection={<span>→</span>}
-                >
-                  Review Claims
-                </Button>
-              </Group>
+            <div className="flex justify-end sticky bottom-6 z-10 mt-8">
+              <Button
+                id="proceed-to-review"
+                size="lg"
+                color="green"
+                radius="xl"
+                onClick={() => navigate("/review")}
+                className="shadow-xl shadow-green-900/20 border border-green-500/50"
+                rightSection={<span>→</span>}
+              >
+                Review {claimsStore.totalCount} Claims
+              </Button>
             </div>
           )}
         </Stack>

@@ -18,6 +18,7 @@ import {
   Text,
   Anchor,
   Badge,
+  Group,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import { authStore } from "../stores/appStore";
@@ -41,20 +42,33 @@ const LoginForm = observer(() => {
     <form onSubmit={handleSubmit} id="login-form">
       <Stack gap={16}>
         {/* ── Demo credentials hint ──────────────────────────────────── */}
-        <div className="bg-blue-950/30 border border-blue-800/30 rounded-xl p-3">
-          <Text size="xs" c="blue.4" fw={500} mb={6}>
-            Demo Credentials
-          </Text>
+        <div className="bg-slate-50 border border-slate-200 rounded-md p-3">
+          <Group justify="space-between" mb={6}>
+            <Text size="xs" c="dimmed" fw={500}>
+              Demo Credentials
+            </Text>
+            <Button 
+              size="compact-xs" 
+              variant="light" 
+              color="green" 
+              onClick={() => {
+                setUsername("admin");
+                setPassword("password123");
+              }}
+            >
+              Auto-fill
+            </Button>
+          </Group>
           <div className="flex gap-4">
             <div>
               <Text size="xs" c="dimmed">Username</Text>
-              <Badge variant="outline" color="blue" size="sm" ff="monospace">
+              <Badge variant="outline" color="green" size="sm" ff="monospace">
                 admin
               </Badge>
             </div>
             <div>
               <Text size="xs" c="dimmed">Password</Text>
-              <Badge variant="outline" color="blue" size="sm" ff="monospace">
+              <Badge variant="outline" color="green" size="sm" ff="monospace">
                 password123
               </Badge>
             </div>
@@ -77,14 +91,6 @@ const LoginForm = observer(() => {
           onChange={(e) => setUsername(e.currentTarget.value)}
           required
           size="md"
-          styles={{
-            input: {
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.1)",
-              color: "white",
-            },
-            label: { color: "#9ca3af", marginBottom: 4 },
-          }}
         />
 
         {/* ── Password ───────────────────────────────────────────────── */}
@@ -96,14 +102,6 @@ const LoginForm = observer(() => {
           onChange={(e) => setPassword(e.currentTarget.value)}
           required
           size="md"
-          styles={{
-            input: {
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.1)",
-              color: "white",
-            },
-            label: { color: "#9ca3af", marginBottom: 4 },
-          }}
         />
 
         {/* ── Submit Button ──────────────────────────────────────────── */}
@@ -125,7 +123,7 @@ const LoginForm = observer(() => {
           <Anchor
             component="button"
             size="xs"
-            c="green.4"
+            c="green.8"
             onClick={() => navigate("/mrf")}
           >
             View Public MRF Index

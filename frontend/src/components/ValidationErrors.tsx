@@ -36,19 +36,19 @@ export default function ValidationErrors({
 
   return (
     <Alert
-      color="orange"
+      color="amber"
       title={
         <div className="flex items-center gap-2">
           <span>⚠️ Validation Warnings</span>
-          <Badge color="orange" size="sm" variant="filled">
+          <Badge color="amber" size="sm" variant="light">
             {errors.length} / {totalRows} rows
           </Badge>
         </div>
       }
-      className="border border-orange-800/40"
+      className="border border-amber-300 bg-amber-50"
     >
       <Stack gap={8}>
-        <Text size="sm" c="orange.3">
+        <Text size="sm" c="amber.9" fw={500}>
           {errors.length} row{errors.length !== 1 ? "s" : ""} had validation
           errors and were excluded from the claims table. Valid rows are still
           available for review.
@@ -56,7 +56,7 @@ export default function ValidationErrors({
 
         <Button
           variant="subtle"
-          color="orange"
+          color="amber"
           size="xs"
           onClick={() => setShowDetails((v) => !v)}
         >
@@ -69,22 +69,22 @@ export default function ValidationErrors({
               {errors.slice(0, 50).map((err) => (
                 <Box
                   key={err.rowIndex}
-                  className="bg-orange-950/30 border border-orange-800/20 rounded-md p-2"
+                  className="bg-amber-100/70 border border-amber-300 rounded-md p-2"
                 >
                   <div className="flex items-center gap-2 mb-1">
-                    <Badge size="xs" color="orange" variant="outline">
+                    <Badge size="lg" color="amber" variant="light">
                       Row {err.rowIndex + 2}
                     </Badge>
                     {err.claimId && (
-                      <Text size="xs" c="dimmed" ff="monospace">
+                      <Text size="sm" c="dimmed" ff="monospace" fw={500}>
                         ID: {err.claimId}
                       </Text>
                     )}
                   </div>
                   <Stack gap={2}>
                     {Object.entries(err.fieldErrors).map(([field, msgs]) => (
-                      <Text key={field} size="xs" c="orange.4">
-                        <Text span fw={600} c="orange.3">
+                      <Text key={field} size="xs" c="amber.9">
+                        <Text span fw={600} c="amber.9">
                           {field}:
                         </Text>{" "}
                         {msgs.join(", ")}

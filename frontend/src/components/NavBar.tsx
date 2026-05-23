@@ -34,11 +34,11 @@ function NavLink({ to, label, isActive }: NavLinkProps) {
       component="button"
       onClick={() => navigate(to)}
       className={`
-        px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200
+        px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-150
         ${
           isActive
-            ? "bg-green-700/20 text-green-300 border border-green-700/40"
-            : "text-gray-400 hover:text-white hover:bg-white/5"
+            ? "bg-green-100 text-green-700 border border-green-300"
+            : "text-slate-600 hover:text-slate-900 hover:bg-slate-200"
         }
       `}
       underline="never"
@@ -61,20 +61,17 @@ const NavBar = observer(() => {
   return (
     <Box
       component="nav"
-      className="sticky top-0 z-50 border-b border-white/10 backdrop-blur-xl"
-      style={{
-        background: "rgba(10, 15, 10, 0.85)",
-      }}
+      className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-md shadow-sm"
     >
       <Container size="xl" py={12}>
         <Group justify="space-between" align="center">
           {/* ── Brand ─────────────────────────────────────────────── */}
           <Group gap={10} style={{ cursor: "pointer" }} onClick={() => navigate("/")}>
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center shadow-lg shadow-green-900/40">
+            <div className="w-8 h-8 rounded-md bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center shadow-sm">
               <span className="text-white font-bold text-xs">MRF</span>
             </div>
             <div>
-              <Text fw={700} size="sm" c="white" lh={1.1}>
+              <Text fw={700} size="sm" c="slate.9" lh={1.1}>
                 TiC MRF
               </Text>
               <Text size="xs" c="dimmed" lh={1.1}>
@@ -112,6 +109,7 @@ const NavBar = observer(() => {
                   variant="light"
                   color="green"
                   size="sm"
+                  radius="sm"
                   className="hidden sm:flex"
                 >
                   {authStore.username}
@@ -127,7 +125,7 @@ const NavBar = observer(() => {
               </>
             ) : (
               <Button
-                variant="light"
+                variant="filled"
                 color="green"
                 size="xs"
                 onClick={() => navigate("/login")}

@@ -19,18 +19,36 @@ import { AgGridReact } from "ag-grid-react";
 import {
   AllCommunityModule,
   ModuleRegistry,
+  themeQuartz,
+  colorSchemeLight,
   type ColDef,
-  type GridReadyEvent,
-  type CellValueChangedEvent,
   type ICellRendererParams,
+  type CellValueChangedEvent,
 } from "ag-grid-community";
-import { Group, Button, Text, Badge, Tooltip, Box } from "@mantine/core";
+import { Group, Button, Text, Badge, Tooltip, Box, Checkbox } from "@mantine/core";
 import { claimsStore } from "../stores/appStore";
 import type { EditableClaim } from "../stores/appStore";
 import type { ClaimRow } from "../utils/csvValidator";
 
 // Register all AG Grid Community modules
 ModuleRegistry.registerModules([AllCommunityModule]);
+
+const customTheme = themeQuartz
+  .withPart(colorSchemeLight)
+  .withParams({
+    backgroundColor: "transparent",
+    headerBackgroundColor: "#f8fafc",       // slate-50
+    rowHoverColor: "rgba(0, 0, 0, 0.03)",
+    selectedRowBackgroundColor: "rgba(22, 163, 74, 0.08)",
+    borderColor: "#e2e8f0",                 // slate-200
+    wrapperBorderRadius: 6,
+    fontFamily: '"Inter", system-ui, sans-serif',
+    accentColor: "#16a34a",                 // green-600
+    foregroundColor: "#0f172a",             // slate-900
+    headerTextColor: "#475569",             // slate-600
+    oddRowBackgroundColor: "#ffffff",
+    rowBorder: true,
+  });
 
 // ---------------------------------------------------------------------------
 // Currency formatter for numeric columns
@@ -51,34 +69,39 @@ function ApproveToggleRenderer(params: ICellRendererParams<EditableClaim>) {
   if (!claim) return null;
 
   return (
-    <div className="flex items-center h-full">
-      <button
-        onClick={() => claimsStore.toggleApprove(claim._id)}
-        className={`
-          px-2 py-0.5 rounded text-xs font-semibold transition-all duration-200 border
-          ${
-            claim._approved
-              ? "bg-green-900/40 text-green-300 border-green-700/50 hover:bg-green-900/60"
-              : "bg-gray-800/60 text-gray-400 border-gray-700/50 hover:bg-gray-700/60"
-          }
-        `}
-      >
-        {claim._approved ? "✓ Approved" : "Approve"}
-      </button>
+    <div 
+      className="flex items-center justify-center h-full cursor-pointer"
+      onClick={(e) => {
+        e.stopPropagation();
+        claimsStore.toggleApprove(claim._id);
+      }}
+      onDoubleClick={(e) => e.stopPropagation()}
+    >
+      <Checkbox
+        color="green"
+        checked={claim._approved}
+        onChange={() => {}} // Handled by wrapper
+        aria-label="Approve claim"
+        style={{ cursor: "pointer", pointerEvents: "none" }}
+      />
     </div>
   );
 }
 
+
 /** Remove row button cell renderer */
-function RemoveButtonRenderer(params: ICellRendererParams<EditableClaim>) {
+function RemoveButtonRenderer(params: ICellRendererParams<EditableClaim> & { onRemove?: (c: EditableClaim) => void }) {
   const claim = params.data;
   if (!claim) return null;
 
   return (
     <div className="flex items-center h-full">
       <button
-        onClick={() => claimsStore.removeClaim(claim._id)}
-        className="px-2 py-0.5 rounded text-xs text-red-400 border border-red-800/40 hover:bg-red-950/40 hover:text-red-300 transition-all duration-200"
+        onClick={(e) => {
+          e.stopPropagation();
+          if (params.onRemove) params.onRemove(claim);
+        }}
+        className="px-2 py-0.5 rounded text-xs text-red-600 border border-red-200 hover:bg-red-700 hover:border-red-700 hover:text-white transition-all duration-200"
         title="Remove this claim"
       >
         ✕ Remove
@@ -97,11 +120,11 @@ function currencyFormatter(params: { value: unknown }): string {
 function ClaimStatusRenderer(params: ICellRendererParams<EditableClaim>) {
   const status = params.value as string;
   const colorMap: Record<string, string> = {
-    Payable: "text-green-400 bg-green-900/30 border-green-800/40",
-    Denied: "text-red-400 bg-red-900/30 border-red-800/40",
-    "Partial Deny": "text-orange-400 bg-orange-900/30 border-orange-800/40",
+    Payable: "text-emerald-700 bg-emerald-50 border-emerald-300",
+    Denied: "text-rose-700 bg-rose-50 border-rose-300",
+    "Partial Deny": "text-amber-700 bg-amber-50 border-amber-300",
   };
-  const cls = colorMap[status] ?? "text-gray-400 bg-gray-900/30 border-gray-700/40";
+  const cls = colorMap[status] ?? "text-slate-700 bg-slate-50 border-slate-300";
   return (
     <div className="flex items-center h-full">
       <span className={`px-2 py-0.5 rounded text-xs font-medium border ${cls}`}>
@@ -115,13 +138,16 @@ function ClaimStatusRenderer(params: ICellRendererParams<EditableClaim>) {
 // Column Definitions
 // ---------------------------------------------------------------------------
 
-function buildColumnDefs(): ColDef<EditableClaim>[] {
+function buildColumnDefs(
+  onRemove?: (c: EditableClaim) => void
+): ColDef<EditableClaim>[] {
   return [
     // ── Actions ───────────────────────────────────────────────────────────
     {
-      headerName: "Approval",
+      headerName: "Approve",
       field: "_approved",
-      width: 120,
+      width: 90,
+      minWidth: 90,
       pinned: "left",
       sortable: false,
       filter: false,
@@ -130,18 +156,21 @@ function buildColumnDefs(): ColDef<EditableClaim>[] {
     {
       headerName: "Remove",
       field: "_id",
-      width: 100,
+      width: 90,
+      minWidth: 90,
       pinned: "left",
       sortable: false,
       filter: false,
       cellRenderer: RemoveButtonRenderer,
+      cellRendererParams: { onRemove },
     },
 
     // ── Claim Identifiers ─────────────────────────────────────────────────
     {
       headerName: "Claim ID",
       field: "claimId",
-      width: 160,
+      width: 120,
+      minWidth: 120,
       pinned: "left",
       filter: "agTextColumnFilter",
       cellStyle: { fontFamily: "monospace", fontSize: "11px" },
@@ -160,6 +189,7 @@ function buildColumnDefs(): ColDef<EditableClaim>[] {
       field: "billed",
       width: 110,
       editable: true,
+      cellClass: "editable-cell",
       filter: "agNumberColumnFilter",
       valueFormatter: currencyFormatter,
       cellStyle: { textAlign: "right" },
@@ -169,15 +199,17 @@ function buildColumnDefs(): ColDef<EditableClaim>[] {
       field: "allowed",
       width: 110,
       editable: true,
+      cellClass: "editable-cell",
       filter: "agNumberColumnFilter",
       valueFormatter: currencyFormatter,
-      cellStyle: { textAlign: "right", color: "#86efac" }, // green-300
+      cellStyle: { textAlign: "right", color: "#15803d", fontWeight: "600" }, // green-700 for light bg
     },
     {
       headerName: "Paid",
       field: "paid",
       width: 110,
       editable: true,
+      cellClass: "editable-cell",
       filter: "agNumberColumnFilter",
       valueFormatter: currencyFormatter,
       cellStyle: { textAlign: "right" },
@@ -189,6 +221,7 @@ function buildColumnDefs(): ColDef<EditableClaim>[] {
       field: "procedureCode",
       width: 120,
       editable: true,
+      cellClass: "editable-cell",
       filter: "agTextColumnFilter",
       cellStyle: { fontFamily: "monospace" },
     },
@@ -224,6 +257,7 @@ function buildColumnDefs(): ColDef<EditableClaim>[] {
       field: "providerName",
       width: 200,
       editable: true,
+      cellClass: "editable-cell",
       filter: "agTextColumnFilter",
     },
 
@@ -269,10 +303,14 @@ function buildColumnDefs(): ColDef<EditableClaim>[] {
 // Main ClaimsTable Component
 // ---------------------------------------------------------------------------
 
-const ClaimsTable = observer(() => {
+interface ClaimsTableProps {
+  onRemove?: (claim: EditableClaim) => void;
+}
+
+const ClaimsTable = observer(({ onRemove }: ClaimsTableProps) => {
   const gridRef = useRef<AgGridReact<EditableClaim>>(null);
 
-  const columnDefs = useMemo(() => buildColumnDefs(), []);
+  const columnDefs = useMemo(() => buildColumnDefs(onRemove), [onRemove]);
 
   /** AG Grid default column settings */
   const defaultColDef = useMemo<ColDef<EditableClaim>>(
@@ -282,15 +320,15 @@ const ClaimsTable = observer(() => {
       filter: true,
       floatingFilter: true,
       suppressHeaderMenuButton: false,
+      minWidth: 130, // Prevents squishing
     }),
     []
   );
 
-  /** Row styling: approved = green tint, default = transparent */
   const getRowStyle = useCallback(
     (params: { data?: EditableClaim }) => {
       if (params.data?._approved) {
-        return { background: "rgba(0, 69, 2, 0.15)" };
+        return { background: "rgba(34, 197, 94, 0.05)" };
       }
       return {};
     },
@@ -311,12 +349,9 @@ const ClaimsTable = observer(() => {
     []
   );
 
-  const onGridReady = useCallback((params: GridReadyEvent) => {
-    params.api.sizeColumnsToFit();
+  const onGridReady = useCallback(() => {
+    // Intentionally omitting sizeColumnsToFit() to allow horizontal scrolling
   }, []);
-
-  // AG Grid theme classes
-  const gridClass = "ag-theme-quartz-dark";
 
   if (claimsStore.claims.length === 0) {
     return (
@@ -337,13 +372,13 @@ const ClaimsTable = observer(() => {
       {/* ── Summary & Actions Bar ──────────────────────────────────── */}
       <Group justify="space-between" align="center" px={4}>
         <Group gap={8}>
-          <Badge variant="light" color="blue" size="md">
+          <Badge variant="light" color="green" size="md" radius="sm">
             {claimsStore.totalCount} Total
           </Badge>
-          <Badge variant="light" color="green" size="md">
+          <Badge variant="light" color="gray" size="md" radius="sm">
             {claimsStore.approvedCount} Approved
           </Badge>
-          <Badge variant="light" color="gray" size="md">
+          <Badge variant="light" color="gray" size="md" radius="sm">
             {claimsStore.pendingClaims.length} Pending
           </Badge>
         </Group>
@@ -352,7 +387,7 @@ const ClaimsTable = observer(() => {
           <Tooltip label="Approve all loaded claims">
             <Button
               size="xs"
-              variant="light"
+              variant="filled"
               color="green"
               onClick={() => claimsStore.approveAll()}
             >
@@ -363,7 +398,7 @@ const ClaimsTable = observer(() => {
             <Button
               size="xs"
               variant="subtle"
-              color="gray"
+              color="slate"
               onClick={() => claimsStore.rejectAll()}
             >
               Clear All
@@ -373,9 +408,10 @@ const ClaimsTable = observer(() => {
       </Group>
 
       {/* ── AG Grid Table ──────────────────────────────────────────── */}
-      <div className={gridClass} style={{ height: "560px", width: "100%" }}>
+      <div style={{ height: "560px", width: "100%" }}>
         <AgGridReact<EditableClaim>
           ref={gridRef}
+          theme={customTheme}
           rowData={claimsStore.claims.slice()} // MobX observable → plain array
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
@@ -388,14 +424,13 @@ const ClaimsTable = observer(() => {
           paginationPageSizeSelector={[20, 50, 100, 200]}
           animateRows={true}
           suppressCellFocus={false}
-          rowSelection={{ mode: "multiRow" }}
+          rowSelection="single"
         />
       </div>
 
       {/* ── Editing Hint ───────────────────────────────────────────── */}
       <Text size="xs" c="dimmed" ta="center">
-        💡 Click any highlighted cell to edit • Use the column filters to search
-        • Approved rows are highlighted green
+        💡 Click any highlighted cell to edit • Use the column filters to search • Approved rows are highlighted green
       </Text>
     </div>
   );

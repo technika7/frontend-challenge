@@ -18,9 +18,9 @@ interface StatusBadgeProps {
 }
 
 const STATUS_COLOR: Record<string, string> = {
-  Payable: "green",
-  Denied: "red",
-  "Partial Deny": "orange",
+  Payable: "emerald",
+  Denied: "rose",
+  "Partial Deny": "amber",
 };
 
 export default function StatusBadge({ status }: StatusBadgeProps) {

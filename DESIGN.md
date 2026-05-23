@@ -56,7 +56,7 @@ frontend/src/
     BasicLayout.tsx     ← Root layout with NavBar + React Router Outlet
 
   routes.tsx            ← React Router createBrowserRouter config
-  App.tsx               ← MantineProvider (dark theme) + RouterProvider
+  App.tsx               ← MantineProvider (light theme) + RouterProvider
   index.css             ← Global styles (Mantine, AG Grid, Tailwind)
 
 backend/src/
@@ -93,6 +93,7 @@ mrf-files/              ← Generated JSON MRF output (auto-created)
 - AG Grid Community Edition with 17 columns
 - Custom cell renderers: approve toggle, remove button, status badge
 - Inline editing on: `billed`, `allowed`, `paid`, `procedureCode`, `providerName`
+- Single-click inline row approval (via first column checkbox)
 - `onCellValueChanged` syncs edits back to `claimsStore.updateClaimField()`
 - Row highlighting: green tint for approved rows via `getRowStyle`
 - Bulk "Approve All" / "Clear All" buttons above the grid

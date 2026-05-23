@@ -24,23 +24,18 @@ const LoginPage = observer(() => {
   }, [authStore.isAuthenticated, navigate]);
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "linear-gradient(135deg, #050d05 0%, #0a1a0a 50%, #050d05 100%)" }}>
-      {/* ── Background decorative elements ──────────────────────────── */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-green-900/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-green-800/8 rounded-full blur-3xl" />
-      </div>
+    <div className="min-h-screen flex flex-col bg-slate-100">
 
       <div className="flex-1 flex items-center justify-center relative z-10 px-4 py-16">
         <Container size="xs" w="100%">
           <Stack gap={32} align="center">
             {/* ── Logo ────────────────────────────────────────────────── */}
             <div className="flex flex-col items-center gap-3">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-green-800 flex items-center justify-center shadow-2xl shadow-green-900/50">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center shadow-lg shadow-green-900/20">
                 <span className="text-white font-black text-xl">MRF</span>
               </div>
               <div className="text-center">
-                <Title order={2} c="white" fw={700}>
+                <Title order={2} fw={700}>
                   TiC MRF Generator
                 </Title>
                 <Text size="sm" c="dimmed" mt={4}>
@@ -53,10 +48,9 @@ const LoginPage = observer(() => {
             <Box
               w="100%"
               p={28}
-              className="rounded-2xl border border-white/10 backdrop-blur-sm"
-              style={{ background: "rgba(255,255,255,0.04)" }}
+              className="rounded-2xl border border-slate-200 bg-white shadow-sm"
             >
-              <Text size="lg" fw={600} c="white" mb={20}>
+              <Text size="lg" fw={600} mb={20}>
                 Sign in to continue
               </Text>
               <LoginForm />

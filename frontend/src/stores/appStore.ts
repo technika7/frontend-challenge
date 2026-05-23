@@ -131,6 +131,9 @@ class UploadStore {
   /** Papaparse-parsed raw row objects before validation */
   rawRows: RawRow[] = [];
 
+  /** The headers found in the parsed CSV file */
+  foundHeaders: string[] = [];
+
   /** Zod validation errors from the last parse attempt */
   validationErrors: ClaimValidationError[] = [];
 
@@ -151,6 +154,7 @@ class UploadStore {
   reset() {
     this.file = null;
     this.rawRows = [];
+    this.foundHeaders = [];
     this.validationErrors = [];
     this.isLoading = false;
     this.parseError = null;
@@ -188,6 +192,7 @@ class UploadStore {
 
             const rawRows = results.data;
             this.rawRows = rawRows;
+            this.foundHeaders = results.meta.fields || [];
 
             // Validate all rows against the Zod schema
             const { validRows, errors } = validateClaimRows(rawRows);

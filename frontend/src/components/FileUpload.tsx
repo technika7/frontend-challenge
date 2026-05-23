@@ -16,11 +16,9 @@ import {
   Group,
   Text,
   Stack,
-  Button,
   Progress,
   Badge,
   Box,
-  rem,
 } from "@mantine/core";
 import { Dropzone } from "@mantine/dropzone";
 import "@mantine/dropzone/styles.css";
@@ -59,10 +57,7 @@ const FileUpload = observer(() => {
         accept={["text/csv", "application/vnd.ms-excel", ".csv"]}
         loading={uploadStore.isLoading}
         openRef={openRef}
-        className="border-2 border-dashed border-green-800/40 hover:border-green-600/60 transition-all duration-300 rounded-xl"
-        style={{
-          background: "rgba(0, 69, 2, 0.05)",
-        }}
+        className="border-2 border-dashed border-slate-300 hover:border-green-500 hover:bg-green-50 transition-all duration-150 rounded-md bg-white"
       >
         <Group
           justify="center"
@@ -72,7 +67,7 @@ const FileUpload = observer(() => {
           py={40}
         >
           <Dropzone.Accept>
-            <div className="text-green-400 text-5xl">✅</div>
+            <div className="text-green-600 text-5xl">✅</div>
           </Dropzone.Accept>
           <Dropzone.Reject>
             <div className="text-red-400 text-5xl">❌</div>
@@ -80,9 +75,9 @@ const FileUpload = observer(() => {
           <Dropzone.Idle>
             <div className="flex flex-col items-center gap-4">
               {/* Upload icon */}
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-600/20 to-green-800/20 border border-green-700/30 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-md bg-green-100 border border-green-300 flex items-center justify-center">
                 <svg
-                  className="w-8 h-8 text-green-400"
+                  className="w-8 h-8 text-green-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -97,14 +92,14 @@ const FileUpload = observer(() => {
               </div>
 
               <div className="text-center">
-                <Text size="lg" fw={600} c="white">
+                <Text size="lg" fw={600}>
                   Drop your CSV file here
                 </Text>
                 <Text size="sm" c="dimmed" mt={4}>
                   or{" "}
                   <Text
                     span
-                    c="green.4"
+                    c="green.8"
                     style={{ cursor: "pointer" }}
                     onClick={() => openRef.current?.()}
                   >
@@ -132,20 +127,20 @@ const FileUpload = observer(() => {
           <Text size="xs" c="dimmed" mb={4}>
             Parsing and validating CSV…
           </Text>
-          <Progress value={100} animated color="green" size="sm" radius="xl" />
+          <Progress value={100} animated color="green" size="sm" radius="md" />
         </Box>
       )}
 
       {/* ── Selected File Info ─────────────────────────────────────── */}
       {uploadStore.file && !uploadStore.isLoading && (
-        <Box className="bg-white/5 border border-white/10 rounded-xl p-4">
+        <Box className="bg-white border border-slate-200 rounded-md p-4 shadow-sm">
           <Group justify="space-between" align="center">
             <Group gap={10}>
-              <div className="w-8 h-8 rounded-lg bg-green-900/40 flex items-center justify-center">
-                <span className="text-xs text-green-400 font-bold">CSV</span>
+              <div className="w-8 h-8 rounded-md bg-green-100 border border-green-300 flex items-center justify-center">
+                <span className="text-xs text-green-700 font-bold">CSV</span>
               </div>
               <div>
-                <Text size="sm" fw={500} c="white">
+                <Text size="sm" fw={500}>
                   {uploadStore.file.name}
                 </Text>
                 <Text size="xs" c="dimmed">
@@ -160,7 +155,7 @@ const FileUpload = observer(() => {
                   ✓ {uploadStore.validRowCount} valid
                 </Badge>
                 {uploadStore.errorRowCount > 0 && (
-                  <Badge color="orange" variant="light" size="sm">
+                  <Badge color="red" variant="light" size="sm">
                     ⚠ {uploadStore.errorRowCount} errors
                   </Badge>
                 )}
@@ -172,8 +167,8 @@ const FileUpload = observer(() => {
 
       {/* ── Parse Error ────────────────────────────────────────────── */}
       {uploadStore.parseError && (
-        <Box className="bg-red-950/30 border border-red-800/40 rounded-xl p-4">
-          <Text size="sm" c="red.4">
+        <Box className="bg-red-50 border border-red-200 rounded-md p-4">
+          <Text size="sm" c="red.8" fw={500}>
             ⛔ {uploadStore.parseError}
           </Text>
         </Box>
@@ -187,19 +182,7 @@ const FileUpload = observer(() => {
         />
       )}
 
-      {/* ── Browse Button ──────────────────────────────────────────── */}
-      <Button
-        variant="outline"
-        color="green"
-        onClick={() => openRef.current?.()}
-        leftSection={
-          <span style={{ fontSize: rem(14) }}>📁</span>
-        }
-        size="sm"
-        style={{ alignSelf: "center" }}
-      >
-        {uploadStore.file ? "Choose Different File" : "Browse Files"}
-      </Button>
+      {/* Browse button removed as Dropzone is clickable */}
     </Stack>
   );
 });

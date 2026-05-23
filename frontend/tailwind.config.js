@@ -4,6 +4,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: ['selector', '[data-mantine-color-scheme="dark"]'],
   theme: {
     extend: {
       colors: {
