@@ -4,6 +4,7 @@ node_modules
 # build
 dist
 lib
+build
 *.local
 
 # env
@@ -12,3 +13,6 @@ lib
 
 # misc
 .DS_Store
+
+# generated MRF output (runtime — not source code)
+backend/mrf-files/
